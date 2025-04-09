@@ -1,6 +1,6 @@
-const Review = require('../models/Review');
+import Review from '../models/Review.js';
 
-exports.postReview = async (req, res) => {
+export const postReview = async (req, res) => {
   const { menuItemId, rating, comment } = req.body;
   try {
     const existing = await Review.findOne({ userId: req.user.id, menuItemId });
@@ -25,7 +25,7 @@ exports.postReview = async (req, res) => {
   }
 };
 
-exports.getReviewsForItem = async (req, res) => {
+export const getReviewsForItem = async (req, res) => {
   try {
     const reviews = await Review.find({ menuItemId: req.params.id }).populate('userId');
     const average =

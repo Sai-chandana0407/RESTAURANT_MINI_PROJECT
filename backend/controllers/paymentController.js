@@ -1,8 +1,7 @@
-const stripe = require('../utils/stripe');
+import stripe from '../utils/stripe.js';
 
-
-exports.createPaymentIntent = async (req, res) => {
-  const { amount } = req.body; 
+export const createPaymentIntent = async (req, res) => {
+  const { amount } = req.body;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({

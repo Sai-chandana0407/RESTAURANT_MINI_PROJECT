@@ -1,6 +1,6 @@
-const Reservation = require('../models/Reservation');
+import Reservation from '../models/Reservation.js';
 
-exports.bookTable = async (req, res) => {
+export const bookTable = async (req, res) => {
   try {
     const { name, date, time, numberOfGuests, tableNumber } = req.body;
 
@@ -22,7 +22,7 @@ exports.bookTable = async (req, res) => {
   }
 };
 
-exports.getMyReservations = async (req, res) => {
+export const getMyReservations = async (req, res) => {
   try {
     const reservations = await Reservation.find({ userId: req.user.id });
     res.json(reservations);
@@ -31,7 +31,7 @@ exports.getMyReservations = async (req, res) => {
   }
 };
 
-exports.cancelReservation = async (req, res) => {
+export const cancelReservation = async (req, res) => {
   try {
     const reservation = await Reservation.findOneAndDelete({
       _id: req.params.id,
@@ -44,7 +44,7 @@ exports.cancelReservation = async (req, res) => {
   }
 };
 
-exports.getAllReservations = async (req, res) => {
+export const getAllReservations = async (req, res) => {
   try {
     const reservations = await Reservation.find().populate('userId');
     res.json(reservations);

@@ -1,19 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const {
+import express from 'express';
+import {
   placeOrder,
   getMyOrders,
   getAllOrders,
   updateOrderStatus
-} = require('../controllers/orderController');
+} from '../controllers/orderController.js';
 
-const auth = require('../middleware/auth');
-const roleCheck = require('../middleware/role');
+import auth from '../middleware/auth.js';
+import roleCheck from '../middleware/role.js';
+
+const router = express.Router();
 
 router.post('/', auth, placeOrder); 
 router.get('/my', auth, getMyOrders); 
-
 router.get('/', auth, roleCheck(['admin', 'staff']), getAllOrders);
 router.put('/:id', auth, roleCheck(['admin', 'staff']), updateOrderStatus);
 
-module.exports = router;
+export default router;

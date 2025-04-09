@@ -1,7 +1,7 @@
-const Order = require('../models/Order');
-const MenuItem = require('../models/MenuItem');
+import Order from '../models/Order.js';
+import MenuItem from '../models/MenuItem.js';
 
-exports.placeOrder = async (req, res) => {
+export const placeOrder = async (req, res) => {
   try {
     const { items } = req.body;
 
@@ -24,7 +24,7 @@ exports.placeOrder = async (req, res) => {
   }
 };
 
-exports.getMyOrders = async (req, res) => {
+export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id }).populate('items.menuItem');
     res.json(orders);
@@ -33,7 +33,7 @@ exports.getMyOrders = async (req, res) => {
   }
 };
 
-exports.getAllOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate('userId').populate('items.menuItem');
     res.json(orders);
@@ -42,7 +42,7 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-exports.updateOrderStatus = async (req, res) => {
+export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
     const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });

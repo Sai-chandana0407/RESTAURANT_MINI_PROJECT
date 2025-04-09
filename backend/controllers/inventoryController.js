@@ -1,7 +1,6 @@
-const InventoryItem = require('../models/InventoryItem');
+import InventoryItem from '../models/InventoryItem.js';
 
-
-exports.addItem = async (req, res) => {
+export const addItem = async (req, res) => {
   try {
     const item = await InventoryItem.create(req.body);
     res.status(201).json(item);
@@ -10,7 +9,7 @@ exports.addItem = async (req, res) => {
   }
 };
 
-exports.getItems = async (req, res) => {
+export const getItems = async (req, res) => {
   try {
     const items = await InventoryItem.find();
     res.json(items);
@@ -19,7 +18,7 @@ exports.getItems = async (req, res) => {
   }
 };
 
-exports.updateQuantity = async (req, res) => {
+export const updateQuantity = async (req, res) => {
   const { quantity } = req.body;
   try {
     const item = await InventoryItem.findByIdAndUpdate(
@@ -34,9 +33,11 @@ exports.updateQuantity = async (req, res) => {
   }
 };
 
-exports.getLowStockItems = async (req, res) => {
+export const getLowStockItems = async (req, res) => {
   try {
-    const lowStock = await InventoryItem.find({ $expr: { $lte: ["$quantity", "$threshold"] } });
+    const lowStock = await InventoryItem.find({
+      $expr: { $lte: ["$quantity", "$threshold"] }
+    });
     res.json(lowStock);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch low stock items' });

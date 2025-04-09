@@ -1,5 +1,5 @@
 .item-cart-container {
-  background: url('C:\Users\Dell\RESTAURANT_MINI_PROJECT\public\img\Owner1.jpeg') no-repeat center center;
+  background: url('/img/Owner1.jpeg') no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   padding: 20px;

@@ -1,18 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const {
+import express from 'express';
+import {
   addItem,
   getItems,
   updateQuantity,
   getLowStockItems
-} = require('../controllers/inventoryController');
+} from '../controllers/inventoryController.js';
 
-const auth = require('../middleware/auth');
-const roleCheck = require('../middleware/role');
+import auth from '../middleware/auth.js';
+import roleCheck from '../middleware/role.js';
+
+const router = express.Router();
 
 router.post('/', auth, roleCheck(['admin', 'staff']), addItem);
 router.get('/', auth, roleCheck(['admin', 'staff']), getItems);
 router.put('/:id', auth, roleCheck(['admin', 'staff']), updateQuantity);
 router.get('/low-stock/all', auth, roleCheck(['admin', 'staff']), getLowStockItems);
 
-module.exports = router;
+export default router;
