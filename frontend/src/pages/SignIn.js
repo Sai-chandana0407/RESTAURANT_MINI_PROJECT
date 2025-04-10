@@ -1,8 +1,8 @@
 import React from 'react'
 import { FaGoogle, FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-function SignIn() 
-{
+
+function SignIn() {
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center vh-100"
@@ -22,19 +22,23 @@ function SignIn()
             <label className="form-label fw-bold">Password</label>
             <input type="password" className="form-control" placeholder="Enter password" />
           </div>
-          <Link to="/homePage" className="btn btn-warning w-100 fw-bold">Sign In</Link>
+          <button type="submit" className="btn btn-warning w-100 fw-bold mb-3">Sign In</button>
+          
+          <div className="text-center">
+            <p className="mb-0">New User? <Link to="/signup" className="text-warning fw-bold">Sign up</Link> to create your account</p>
+          </div>
         </form>
       </div>
 
       {/* Social Icons */}
-      <div className="social-icons w-100 text-center py-3 mt-4 ">
-        <FaGoogle className="text-white mx-3 fs-4" />
-        <FaFacebookF className="text-white mx-3 fs-4" />
-        <FaInstagram className="text-white mx-3 fs-4" />
-        <FaTwitter className="text-white mx-3 fs-4" />
+      <div className="social-icons w-100 text-center py-3 mt-4">
+        <a href="#" className="text-white mx-2"><FaGoogle /></a>
+        <a href="#" className="text-white mx-2"><FaFacebookF /></a>
+        <a href="#" className="text-white mx-2"><FaInstagram /></a>
+        <a href="#" className="text-white mx-2"><FaTwitter /></a>
       </div>
     </div>
   );
-};
+}
 
 export default SignIn;
