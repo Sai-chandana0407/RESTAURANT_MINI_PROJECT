@@ -21,7 +21,16 @@ function Menu() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [itemCounts, setItemCounts] = useState({});
   const [filteredItems, setFilteredItems] = useState(menuItems);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    // Initialize cart items from localStorage
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   useEffect(() => {
     if (location.state) {
@@ -30,9 +39,6 @@ function Menu() {
       }
       if (location.state.category) {
         setSelectedCategory(location.state.category);
-      }
-      if (location.state.cartItems) {
-        setCartItems(location.state.cartItems);
       }
     }
   }, [location]);
@@ -96,7 +102,7 @@ function Menu() {
   };
 
   const handleViewCart = () => {
-    navigate('/cart', { state: { cartItems } });
+    navigate('/cart');
   };
 
   const getTotalItems = () => {

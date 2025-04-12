@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { protect } from '../middleware/auth.js';
 import rateLimit from 'express-rate-limit';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -31,15 +32,23 @@ router.post('/register', async (req, res) => {
 
     // Check if user already exists
     if (users.some(user => user.email === email)) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Email already registered' });
     }
+
+    // Check if phone number already exists
+    if (users.some(user => user.phoneNumber === phoneNumber)) {
+      return res.status(400).json({ message: 'Phone number already registered' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     const newUser = {
       id: Date.now().toString(),
       name,
       email,
-      password, // In production, hash this password
+      password: hashedPassword,
       phoneNumber,
       role: 'customer'
     };
@@ -54,6 +63,7 @@ router.post('/register', async (req, res) => {
     );
 
     res.status(201).json({
+      message: 'User registered successfully',
       token,
       user: {
         id: newUser.id,

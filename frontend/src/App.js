@@ -20,7 +20,7 @@ import OwnerLogin from './pages/OwnerInterface/OwnerLogin';
 import ItemCart from './pages/OwnerInterface/ItemCart';
 import EmployeeList from './pages/OwnerInterface/EmployeeList';
 import ProfileUpdate from './pages/OwnerInterface/ProfileUpdate';
-import ReviewPage from './pages/ReviewPage';
+import Reviews from './pages/Reviews';
 import Feedback from './pages/Feedback';
 import ForgotPassword from './pages/ForgotPassword';
 import VerifyOTP from './pages/VerifyOTP';
@@ -55,7 +55,7 @@ function App() {
           <Route path="/items-list" element={<ItemCart />} />
           <Route path="/employee-list" element={<EmployeeList />} />
           <Route path="/employee-profile" element={<ProfileUpdate />} />
-          <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/reviews" element={<Reviews />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />

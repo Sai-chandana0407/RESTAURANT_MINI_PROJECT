@@ -3,37 +3,97 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import './Cart.css';
 
 function Cart() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    // Initialize cart items from localStorage
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Update cart items when location changes (back navigation)
   useEffect(() => {
-    if (location.state?.cartItems) {
-      setCartItems(location.state.cartItems);
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart)) {
+          setCartItems(parsedCart);
+        }
+      } catch (err) {
+        console.error('Error parsing cart data:', err);
+      }
     }
   }, [location]);
 
-  const increaseQuantity = (id) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    ));
+  useEffect(() => {
+    // Recalculate total whenever cartItems change
+    if (Array.isArray(cartItems)) {
+      const newTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      setTotalAmount(newTotal);
+    }
+  }, [cartItems]);
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    try {
+      const updatedItems = cartItems.map(item => 
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      );
+      setCartItems(updatedItems);
+      localStorage.setItem('cart', JSON.stringify(updatedItems));
+    } catch (err) {
+      setError('Failed to update quantity');
+      console.error('Error updating quantity:', err);
+    }
   };
 
-  const decreaseQuantity = (id) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-    ));
+  const handleRemoveItem = (itemId) => {
+    try {
+      const updatedItems = cartItems.filter(item => item.id !== itemId);
+      setCartItems(updatedItems);
+      localStorage.setItem('cart', JSON.stringify(updatedItems));
+    } catch (err) {
+      setError('Failed to remove item');
+      console.error('Error removing item:', err);
+    }
   };
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handlePlaceOrder = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      // Navigate to payment page instead of directly placing order
+      navigate('/payment', { 
+        state: { 
+          cartItems,
+          totalAmount 
+        } 
+      });
+    } catch (err) {
+      setError('Failed to proceed to payment');
+      console.error('Error proceeding to payment:', err);
+    }
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+  if (loading) {
+    return <div className="cart-loading">Loading cart...</div>;
+  }
+
+  if (error) {
+    return <div className="cart-error">{error}</div>;
+  }
 
   return (
     <div>
@@ -122,7 +182,7 @@ function Cart() {
                   <div className="d-flex align-items-center">
                     <button 
                       className="btn btn-sm btn-outline-danger me-2"
-                      onClick={() => decreaseQuantity(item.id)}
+                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                       disabled={item.quantity <= 1}
                     >
                       <FaMinus />
@@ -138,13 +198,13 @@ function Cart() {
                     </span>
                     <button 
                       className="btn btn-sm btn-outline-success me-2"
-                      onClick={() => increaseQuantity(item.id)}
+                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                     >
                       <FaPlus />
                     </button>
                     <button 
                       className="btn btn-sm btn-outline-danger ms-2"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => handleRemoveItem(item.id)}
                     >
                       <FaTrash />
                     </button>
@@ -156,15 +216,15 @@ function Cart() {
               <div className="border-top pt-3 mt-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <h4 className="mb-0 text-dark">Total Amount:</h4>
-                  <h4 className="mb-0 text-dark">₹{calculateTotal()}</h4>
+                  <h4 className="mb-0 text-dark">₹{totalAmount}</h4>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="d-flex justify-content-center gap-3 mt-4">
-                <Link to="/orderSummary" className="btn btn-warning fw-bold">Place Order</Link>
-                <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
-                <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
+                {/* Action Buttons */}
+                <div className="d-flex justify-content-center gap-3 mt-4">
+                  <button onClick={handlePlaceOrder} className="btn btn-warning fw-bold">Place Order</button>
+                  <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
+                  <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
+                </div>
               </div>
             </>
           )}
