@@ -1,74 +1,177 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-const initialCart = [
-  { id: 1, name: "Chocolate Cake", price: 200, image: "/img/cake.jpeg", quantity: 1 },
-  { id: 2, name: "Idli", price: 200, image: "/img/idli.jpeg", quantity: 1 },
-];
 
-function Cart  ()
- {
-  const [cart, setCart] = useState(initialCart);
+function Cart() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([]);
 
-  // Increase Quantity
+  useEffect(() => {
+    if (location.state?.cartItems) {
+      setCartItems(location.state.cartItems);
+    }
+  }, [location]);
+
   const increaseQuantity = (id) => {
-    setCart(cart.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item));
+    setCartItems(cartItems.map(item => 
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    ));
   };
 
-  // Decrease Quantity
   const decreaseQuantity = (id) => {
-    setCart(cart.map(item => item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item));
+    setCartItems(cartItems.map(item => 
+      item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    ));
   };
 
-  // Remove Item
   const removeItem = (id) => {
-    setCart(cart.filter(item => item.id !== id));
+    setCartItems(cartItems.filter(item => item.id !== id));
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   return (
-    <div
-      className="d-flex flex-column justify-content-center align-items-center vh-100"
-      style={{
-        background: `url('/img/img7.jpg') no-repeat center center/cover`,
-      }}
-    >
-    <div className="container mt-4">
-      {/* Header */}
-      <div className="d-flex justify-content-between align-items-center">
-        <h2 className="fw-bold text-center mx-auto">CART</h2>
-        <a href="/menu" className="fw-bold text-decoration-none">Back to menu</a>
-      </div>
+    <div>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm" style={{ height: '50px' }}>
+        <div className="container">
+          <Link className="navbar-brand d-flex align-items-center" to="/" style={{ height: '40px' }}>
+            <img src="/img/logoimg.jpg" alt="Homely Bites Logo" width="30" height="30" className="rounded-circle me-2" />
+            <span className="text-dark" style={{ fontSize: '1rem' }}>Homely Bites</span>
+          </Link>
+          
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-      {/* Cart Items */}
-      <div className="card p-4 mt-3">
-        {cart.map((item) => (
-          <div key={item.id} className="d-flex align-items-center border-bottom pb-3 mb-3">
-            <input type="radio" className="me-3" />
-            <img src={item.image} alt={item.name} className="rounded" width="80" />
-            <div className="flex-grow-1 mx-3">
-              <h5 className="fw-bold">{item.name}</h5>
-              <p className="mb-0 fw-bold">Rs.{item.price}</p>
-            </div>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav me-auto">
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/homePage" style={{ fontSize: '0.9rem' }}>
+                  <FaHome className="me-1" /> Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/menu" style={{ fontSize: '0.9rem' }}>
+                  <FaUtensils className="me-1" /> Menu
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/contactUs" style={{ fontSize: '0.9rem' }}>
+                  <FaPhone className="me-1" /> Contact
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/about" style={{ fontSize: '0.9rem' }}>
+                  <FaInfoCircle className="me-1" /> About
+                </Link>
+              </li>
+            </ul>
+
             <div className="d-flex align-items-center">
-              <button className="btn btn-warning mx-1" onClick={() => decreaseQuantity(item.id)}>-</button>
-              <span className="fw-bold">{item.quantity}</span>
-              <button className="btn btn-warning mx-1" onClick={() => increaseQuantity(item.id)}>+</button>
-              <FaTrash className="text-danger ms-3" style={{ cursor: "pointer" }} onClick={() => removeItem(item.id)} />
+              <div className="dropdown">
+                <button 
+                  className="btn btn-link text-dark dropdown-toggle" 
+                  type="button" 
+                  data-bs-toggle="dropdown"
+                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.9rem' }}
+                >
+                  <FaUserCircle size={20} />
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end">
+                  <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
+                  <li><Link className="dropdown-item" to="/orders">Orders</Link></li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li><Link className="dropdown-item" to="/">Logout</Link></li>
+                </ul>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      </nav>
 
-      {/* Action Buttons */}
-      <div className="d-flex justify-content-center gap-3 mt-4">
-      <Link to="/orderSummary" className="btn btn-warning fw-bold mx-2">Place Order</Link>
-      <Link to="/orderSummary" className="btn btn-warning fw-bold mx-2">Take Away</Link>
-      <Link to="/reserveTable" className="btn btn-warning fw-bold mx-2">ReserveTable</Link>
+      {/* Cart Content */}
+      <div className="container mt-4">
+        {/* Header */}
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold text-dark">CART</h2>
+          <Link to="/menu" className="btn btn-warning">Back to Menu</Link>
+        </div>
+
+        {/* Cart Items */}
+        <div className="card p-4">
+          {cartItems.length === 0 ? (
+            <div className="text-center py-4">
+              <h4 className="text-dark">Your cart is empty</h4>
+              <Link to="/menu" className="btn btn-warning mt-3">Continue Shopping</Link>
+            </div>
+          ) : (
+            <>
+              {cartItems.map((item) => (
+                <div key={item.id} className="d-flex align-items-center border-bottom pb-3 mb-3">
+                  <img src={item.image} alt={item.name} className="rounded" width="80" height="80" style={{ objectFit: 'cover' }} />
+                  <div className="flex-grow-1 mx-3">
+                    <h5 className="fw-bold text-dark">{item.name}</h5>
+                    <p className="mb-0 text-dark">₹{item.price}</p>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <button 
+                      className="btn btn-sm btn-outline-danger me-2"
+                      onClick={() => decreaseQuantity(item.id)}
+                      disabled={item.quantity <= 1}
+                    >
+                      <FaMinus />
+                    </button>
+                    <span className="mx-2" style={{ 
+                      color: '#2c3e50',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      minWidth: '20px',
+                      textAlign: 'center'
+                    }}>
+                      {item.quantity}
+                    </span>
+                    <button 
+                      className="btn btn-sm btn-outline-success me-2"
+                      onClick={() => increaseQuantity(item.id)}
+                    >
+                      <FaPlus />
+                    </button>
+                    <button 
+                      className="btn btn-sm btn-outline-danger ms-2"
+                      onClick={() => removeItem(item.id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* Total Amount */}
+              <div className="border-top pt-3 mt-3">
+                <div className="d-flex justify-content-between align-items-center">
+                  <h4 className="mb-0 text-dark">Total Amount:</h4>
+                  <h4 className="mb-0 text-dark">₹{calculateTotal()}</h4>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="d-flex justify-content-center gap-3 mt-4">
+                <Link to="/orderSummary" className="btn btn-warning fw-bold">Place Order</Link>
+                <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
+                <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
-};
+}
 
 export default Cart;

@@ -1,9 +1,19 @@
-import express from 'express';
-import { register, login } from '../controllers/authController.js';
+// middleware/auth.js
+import jwt from 'jsonwebtoken';
 
-const router = express.Router();
+export const protect = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
 
-router.post('/register', register);
-router.post('/login', login);
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
 
-export default router;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    req.user = decoded; // optionally pass user data along
+    next();
+  } catch (err) {
+    console.error('Token verification failed:', err);
+    res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};

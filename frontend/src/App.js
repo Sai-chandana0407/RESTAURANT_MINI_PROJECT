@@ -20,11 +20,11 @@ import OwnerLogin from './pages/OwnerInterface/OwnerLogin';
 import ItemCart from './pages/OwnerInterface/ItemCart';
 import EmployeeList from './pages/OwnerInterface/EmployeeList';
 import ProfileUpdate from './pages/OwnerInterface/ProfileUpdate';
-// import Feedback from './pages/Feedback'; 
-// import SecurityQuestion from './pages/SecurityQuestion'; 
-// import ResetPassword from './pages/RestPassword';
-// import ReviewPage from './pages/ReviewPage';
-// import NewPasswordPage from './pages/NewPasswordPage';
+import ReviewPage from './pages/ReviewPage';
+import Feedback from './pages/Feedback';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyOTP from './pages/VerifyOTP';
+import './App.css';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -55,12 +55,10 @@ function App() {
           <Route path="/items-list" element={<ItemCart />} />
           <Route path="/employee-list" element={<EmployeeList />} />
           <Route path="/employee-profile" element={<ProfileUpdate />} />
-          {/* <Route path="/feedback" element={<Feedback />} />
-          <Route path="/review" element={<ReviewPage />} />
-          <Route path="/securityquestion" element={<SecurityQuestion />} />
-          <Route path="/newpassword" element={<NewPasswordPage />} />
-          <Route path="/resetpassord" element={<ResetPassword />} /> */}
-
+          <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-otp" element={<VerifyOTP />} />
         </Routes>
       </Router>
     </div>

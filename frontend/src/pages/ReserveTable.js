@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const tableData = [
   {
@@ -46,16 +47,27 @@ const tableData = [
   },
 ];
 
-const ReserveTable1 = () => {
+function ReserveTable() {
+  const navigate = useNavigate();
+  const [selectedTable, setSelectedTable] = useState(null);
+
+  const handleBookNow = (table) => {
+    setSelectedTable(table);
+    // Store the table price in localStorage to be used in OrderSummary
+    localStorage.setItem('tablePrice', table.price);
+    // Navigate to order summary with the table price
+    navigate('/orderSummary', { state: { tablePrice: table.price } });
+  };
+
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-5 fw-bold">RESERVE YOUR TABLE</h2>
+      <h2 className="text-center mb-5 fw-bold" style={{ color: '#000' }}>RESERVE YOUR TABLE</h2>
       <div className="row">
         {tableData.map((table) => (
           <div className="col-md-4 mb-4" key={table.id}>
             <div className="card h-100 shadow">
               <img
-                src={require(`/public/img/${table.image}`)}
+                src={`/img/${table.image}`}
                 alt={`Table ${table.id}`}
                 style={{
                   width: table.width,
@@ -66,8 +78,13 @@ const ReserveTable1 = () => {
                 }}
               />
               <div className="card-body text-center">
-                <h5 className="card-title">PRICE TAG: Rs. {table.price}</h5>
-                <button className="btn btn-warning fw-bold">Book Now</button>
+                <h5 className="card-title" style={{ color: '#000' }}>PRICE TAG: Rs. {table.price}</h5>
+                <button 
+                  className="btn btn-warning fw-bold"
+                  onClick={() => handleBookNow(table)}
+                >
+                  Book Now
+                </button>
               </div>
             </div>
           </div>
@@ -75,6 +92,6 @@ const ReserveTable1 = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ReserveTable1;
+export default ReserveTable;

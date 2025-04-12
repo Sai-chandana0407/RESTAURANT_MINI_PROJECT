@@ -6,14 +6,14 @@ import {
   deleteMenuItem
 } from '../controllers/menuController.js';
 
-import auth from '../middleware/auth.js';
-import roleCheck from '../middleware/role.js';
+import { protect, admin } from '../middleware/auth.js';
+import { roleCheck } from '../middleware/role.js';
 
 const router = express.Router();
 
 router.get('/', getMenu);
-router.post('/', auth, roleCheck(['admin']), createMenuItem);
-router.put('/:id', auth, roleCheck(['admin']), updateMenuItem);
-router.delete('/:id', auth, roleCheck(['admin']), deleteMenuItem);
+router.post('/', protect, roleCheck(['admin']), createMenuItem);
+router.put('/:id', protect, roleCheck(['admin']), updateMenuItem);
+router.delete('/:id', protect, roleCheck(['admin']), deleteMenuItem);
 
 export default router;

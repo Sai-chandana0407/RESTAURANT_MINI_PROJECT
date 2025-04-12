@@ -12,15 +12,55 @@ const EmployeeList = () => {
 
   useEffect(() => {
     setEmployees([
-      { id: "EMP001", name: "John Doe" },
-      { id: "EMP002", name: "Jane Smith" },
-      { id: "EMP003", name: "Alice Johnson" },
+      { 
+        id: "EMP001", 
+        name: "John Doe",
+        position: "Senior Chef",
+        email: "john.doe@homelybites.com",
+        education: "Culinary Arts Degree",
+        training: "Advanced Cooking Techniques",
+        experience: "5 years in fine dining",
+        expertise: "Italian and French Cuisine",
+        passion: "Creating innovative dishes",
+        hobbies: "Food photography, Travel",
+        contact: "+1 234-567-8900"
+      },
+      { 
+        id: "EMP002", 
+        name: "Jane Smith",
+        position: "Head Waiter",
+        email: "jane.smith@homelybites.com",
+        education: "Hospitality Management",
+        training: "Customer Service Excellence",
+        experience: "4 years in luxury dining",
+        expertise: "Wine Pairing",
+        passion: "Creating memorable dining experiences",
+        hobbies: "Wine tasting, Photography",
+        contact: "+1 234-567-8901"
+      },
+      { 
+        id: "EMP003", 
+        name: "Alice Johnson",
+        position: "Sous Chef",
+        email: "alice.johnson@homelybites.com",
+        education: "Culinary Institute Graduate",
+        training: "Modern Cooking Techniques",
+        experience: "3 years in fine dining",
+        expertise: "Asian Fusion Cuisine",
+        passion: "Sustainable cooking",
+        hobbies: "Gardening, Food blogging",
+        contact: "+1 234-567-8902"
+      }
     ]);
   }, []);
 
   const filteredEmployees = employees.filter((emp) =>
     emp.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleEmployeeClick = (employee) => {
+    navigate('/profile', { state: { employee } });
+  };
 
   return (
     <div className="main">
@@ -41,7 +81,12 @@ const EmployeeList = () => {
         {/* Employee Cards */}
         <div className="employee-list">
           {filteredEmployees.map((employee) => (
-            <Card key={employee.id} className="employee-card shadow">
+            <Card 
+              key={employee.id} 
+              className="employee-card shadow"
+              onClick={() => handleEmployeeClick(employee)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="d-flex align-items-center w-100">
                 {/* Avatar */}
                 <div className="avatar">
@@ -52,11 +97,20 @@ const EmployeeList = () => {
                 <div className="employee-info flex-grow-1">
                   <h5>ID-NO: {employee.id}</h5>
                   <p>{employee.name}</p>
+                  <p className="position">{employee.position}</p>
                 </div>
 
                 {/* Open Button */}
                 <div>
-                  <Button className="open-button">OPEN</Button>
+                  <Button 
+                    className="open-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEmployeeClick(employee);
+                    }}
+                  >
+                    VIEW PROFILE
+                  </Button>
                 </div>
               </div>
             </Card>

@@ -1,0 +1,85 @@
+.verify-otp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+              url('C:\Users\User\Documents\pratise\react_practice\restaurant\RESTAURANT_MINI_PROJECT\frontend\public\img\img2.jpg') no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+}
+
+.verify-otp-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.verify-otp-title {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.form-label {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  box-shadow: none;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background-color: #ffca2c;
+  transform: translateY(-2px);
+}
+
+.btn-warning:disabled {
+  background-color: #ffc107;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.alert {
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 576px) {
+  .verify-otp-container {
+    padding: 1.5rem;
+  }
+} 

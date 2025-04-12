@@ -2,6 +2,23 @@
   text-align: center;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Pilcrow Rounded', 'Archivo', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #000;
+  text-shadow: none;
+}
+
+p {
+  color: #000;
+  text-shadow: none;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,14 +31,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #000;
 }
 
 .App-link {

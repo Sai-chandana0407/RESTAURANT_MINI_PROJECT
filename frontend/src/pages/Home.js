@@ -1,9 +1,11 @@
-import react from 'react';
+import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaGoogle, FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Home() {
+  const [isHovered, setIsHovered] = useState(false);
+
   const styles = {
     heroSection: {
       background: "url('/img/img1.jpg') no-repeat center center/cover",
@@ -26,11 +28,12 @@ function Home() {
       textAlign: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
-    textWhite: { 
+    textWhite: {
       color: "#ffffff",
       marginBottom: "2rem",
     },
     title: {
+      fontFamily: "'Pilcrow Rounded', 'Archivo', sans-serif",
       fontSize: "3.5rem",
       fontWeight: "bold",
       marginBottom: "1rem",
@@ -40,43 +43,45 @@ function Home() {
       marginBottom: "2rem",
     },
     getStartedBtn: {
+      width: "200px",
+      height: "50px",
+      background: isHovered ? "#ffca2c" : "#e65c00",
+      borderRadius: "100px",
       padding: "1rem 2rem",
       fontSize: "1.2rem",
       fontWeight: "bold",
-      backgroundColor: "#ffc107",
       border: "none",
-      borderRadius: "5px",
-      color: "#000",
+      color: "white",
       textDecoration: "none",
       transition: "all 0.3s ease",
-    },
-    getStartedBtnHover: {
-      backgroundColor: "#ffca2c",
-      transform: "scale(1.05)",
+      transform: isHovered ? "scale(1.05)" : "scale(1)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      margin: "0 auto",
     },
     footer: {
-      backgroundColor: "#343a40",
+      backgroundColor: "#000000",
       color: "#fff",
       textAlign: "center",
       padding: "15px 0",
     },
     logo: {
-      height: "40px", 
-      width: "40px", 
+      height: "40px",
+      width: "40px",
       marginRight: "10px",
-      borderRadius: "50%", 
+      borderRadius: "50%",
       objectFit: "cover",
     },
-    socialIcon: { margin: "0 10px", fontSize: "20px", color: "white",textDecoration:"none" },
   };
 
   return (
     <div>
       {/* Header Section */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-        <a className="navbar-brand d-flex align-items-center " href="/img/img1.jpg">
-          <img src={'/img/logoimg.jpg'} alt="Logo" style={styles.logo} />Homely Bites
-        </a>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-black px-4">
+        <Link className="navbar-brand d-flex align-items-center" to="/">
+          <img src={'/img/logoimg.jpg'} alt="Logo" style={styles.logo} /> Homely Bites
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -90,25 +95,28 @@ function Home() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item"><a className="nav-link" href="/">Home</a></li>
-            <li className="nav-item"><a className="nav-link" href="/about">About Us</a></li>
-            <li className="nav-item"><a className="nav-link" href="/signIn">Sign In</a></li>
-            <li className="nav-item"><a className="nav-link" href="/signUp">Sign Up</a></li>
-            <li className="nav-item"><a className="nav-link" href="/stafflogin">Staff Login</a></li>
-            <li className="nav-item"><a className="nav-link" href="/ownerlogin">Owner Login</a></li>
-            <li className="nav-item"><a className="nav-link" href="/contactUs">Contact Us</a></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/">Home</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/about">About Us</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/stafflogin">Admin</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/contactUs">Contact Us</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/reviews">Reviews</Link></li>
           </ul>
         </div>
       </nav>
+
       {/* Hero Section */}
       <div style={styles.heroSection}>
         <div style={styles.overlay}>
-          <h1 style={{...styles.textWhite, ...styles.title}}>Taste and Treat</h1>
-          <p style={{...styles.textWhite, ...styles.subtitle}}>Experience the finest dining with us</p>
-          <Link 
-            to="/signin" 
-            className="btn btn-warning"
+          <h1 style={{ ...styles.textWhite, ...styles.title }}>Taste and Treat</h1>
+          <p style={{ ...styles.textWhite, ...styles.subtitle }}>
+            Experience the finest dining with us
+          </p>
+          <Link
+            to="/signin"
             style={styles.getStartedBtn}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
             Get Started
           </Link>
@@ -118,7 +126,7 @@ function Home() {
       {/* Footer Section */}
       <footer style={styles.footer}>
         <p>© 2025 Homely Bites. All Rights Reserved.</p>
-        <div className="social-icons w-100 text-center py-3 mt-4 ">
+        <div className="social-icons w-100 text-center py-3 mt-4">
           <FaGoogle className="text-white mx-3 fs-4" />
           <FaFacebookF className="text-white mx-3 fs-4" />
           <FaInstagram className="text-white mx-3 fs-4" />

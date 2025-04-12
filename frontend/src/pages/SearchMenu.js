@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
 
@@ -18,7 +19,17 @@ const categories = [
   ["Breakfast", "Lunch", "Dinner", "Brunch"],
 ];
 
-function SearchMenu  () {
+function SearchMenu() {
+  const navigate = useNavigate();
+
+  const handleItemClick = (itemName) => {
+    navigate('/menu', { state: { searchQuery: itemName } });
+  };
+
+  const handleCategoryClick = (category) => {
+    navigate('/menu', { state: { category } });
+  };
+
   return (
     <div className="container mt-3">
       {/* Navbar */}
@@ -44,7 +55,12 @@ function SearchMenu  () {
       <h5 className="text-center fw-bold my-3">Most commonly searched items</h5>
       <div className="d-flex justify-content-center gap-4 flex-wrap">
         {searchedItems.map((item, index) => (
-          <div key={index} className="text-center">
+          <div 
+            key={index} 
+            className="text-center cursor-pointer"
+            onClick={() => handleItemClick(item.name)}
+            style={{ cursor: 'pointer' }}
+          >
             <img src={item.image} alt={item.name} className="rounded-circle" width="60" height="60" />
             <p className="mt-2">{item.name}</p>
           </div>
@@ -56,13 +72,19 @@ function SearchMenu  () {
         {categories.map((column, i) => (
           <div key={i} className="d-flex flex-column gap-3">
             {column.map((category, j) => (
-              <button key={j} className="btn btn-warning fw-bold">{category}</button>
+              <button 
+                key={j} 
+                className="btn btn-warning fw-bold"
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category}
+              </button>
             ))}
           </div>
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default SearchMenu;
