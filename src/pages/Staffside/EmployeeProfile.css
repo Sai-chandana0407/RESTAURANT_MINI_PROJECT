@@ -1,0 +1,64 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", sans-serif;
+    background-image: url('C:\Users\Dell\RESTAURANT_MINI_PROJECT\public\img\staff2.webp') ;
+    background-size: cover;
+  }
+  
+  .profile-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .profile-header {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+    font-family: "Times New Roman", serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 20px;
+  }
+  
+  .profile-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .profile-image img {
+    width: 200px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+  }
+  
+  .profile-details {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .profile-field label {
+    color: white;
+    font-weight: bold;
+    width: 200px;
+  }
+  
+  .profile-field input {
+    width: 250px;
+    padding: 8px;
+    border-radius: 20px;
+    border: none;
+    background: white;
+  }

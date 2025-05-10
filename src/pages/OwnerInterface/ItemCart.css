@@ -1,0 +1,84 @@
+.item-cart-container {
+  background: url('C:\Users\Dell\RESTAURANT_MINI_PROJECT\public\img\Owner1.jpeg') no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.items-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.item-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  padding: 10px;
+  width: 300px; 
+  height: 50px;/* Increased width */
+   /* Prevent excessive width */
+  height: px; /* Decreased height */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.item-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1e1e1e;
+}
+
+.item-desc {
+  font-size: 14px;
+  color: #757575;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 25px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 19px;
+  width: 19px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: darkorange;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
