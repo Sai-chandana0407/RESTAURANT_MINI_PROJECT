@@ -11,6 +11,7 @@ function SignUp() {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phoneNumber: '',
     role: 'customer'
   });
@@ -26,22 +27,32 @@ function SignUp() {
   };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber) {
+    // Check required fields
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.phoneNumber) {
       setError('All fields are required');
       return false;
     }
 
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
       return false;
     }
 
+    // Validate password length
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       return false;
     }
 
+    // Check password match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return false;
+    }
+
+    // Validate phone number (10 digits)
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phoneNumber)) {
       setError('Please enter a valid 10-digit phone number');
@@ -62,29 +73,32 @@ function SignUp() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+      // Remove confirmPassword before sending to server
+      const { confirmPassword, ...userData } = formData;
       
-      if (response.data.message === 'User registered successfully') {
+      const response = await axios.post('http://localhost:5000/api/auth/register', userData);
+      
+      if (response.data.token && response.data.user) {
         // Store token and user data
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         
-        // Redirect to home page
-        navigate('/home');
+        // Redirect based on user role
+        if (response.data.user.role === 'staff') {
+          navigate('/dashboard');
+        } else {
+          navigate('/menu');
+        }
       } else {
-        setError('Registration failed. Please try again.');
+        throw new Error('Invalid response from server');
       }
     } catch (err) {
       console.error('Registration error:', err);
       if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         setError(err.response.data.message || 'Registration failed. Please try again.');
       } else if (err.request) {
-        // The request was made but no response was received
-        setError('Unable to connect to the server. Please check your internet connection and try again.');
+        setError('Unable to connect to the server. Please check your internet connection.');
       } else {
-        // Something happened in setting up the request that triggered an Error
         setError('An unexpected error occurred. Please try again later.');
       }
     } finally {
@@ -140,6 +154,20 @@ function SignUp() {
                 onChange={handleChange}
                 placeholder="Enter your password"
                 required
+                minLength={6}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Confirm Password</label>
+              <input
+                type="password"
+                className="form-control"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                required
+                minLength={6}
               />
             </div>
             <div className="form-group">
@@ -152,6 +180,7 @@ function SignUp() {
                 onChange={handleChange}
                 placeholder="Enter your phone number"
                 required
+                pattern="[0-9]{10}"
               />
             </div>
             <button

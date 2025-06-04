@@ -4,11 +4,9 @@ import { protect } from '../middleware/auth.js';
 import rateLimit from 'express-rate-limit';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+import User from '../models/User.js';
 
 const router = express.Router();
-
-// Temporary user data store (replace with database later)
-const users = [];
 
 // Rate limiting for OTP requests
 const otpLimiter = rateLimit({
@@ -25,39 +23,75 @@ const generateOTP = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
 
+// List all users (for testing purposes)
+router.get('/users', async (req, res) => {
+  try {
+    console.log('Fetching all users...');
+    const users = await User.find({}, { password: 0 }); // Exclude password field
+    console.log('Total users in database:', users.length);
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Register new user
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, phoneNumber } = req.body;
+    console.log('Registration attempt:', { name, email, phoneNumber });
+
+    // Validate input
+    if (!name || !email || !password || !phoneNumber) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+
+    // Phone number validation
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return res.status(400).json({ message: 'Invalid phone number format' });
+    }
 
     // Check if user already exists
-    if (users.some(user => user.email === email)) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { phoneNumber }]
+    });
 
-    // Check if phone number already exists
-    if (users.some(user => user.phoneNumber === phoneNumber)) {
-      return res.status(400).json({ message: 'Phone number already registered' });
+    if (existingUser) {
+      console.log('User already exists:', existingUser.email);
+      return res.status(400).json({ 
+        message: existingUser.email === email 
+          ? 'Email already registered' 
+          : 'Phone number already registered' 
+      });
     }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const newUser = {
-      id: Date.now().toString(),
+    console.log('Creating new user...');
+    const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,
       phoneNumber,
       role: 'customer'
-    };
-
-    users.push(newUser);
+    });
+    console.log('User created successfully:', user.email);
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: newUser.id, email: newUser.email, role: newUser.role },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1d' }
     );
@@ -66,10 +100,10 @@ router.post('/register', async (req, res) => {
       message: 'User registered successfully',
       token,
       user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
       }
     });
   } catch (error) {
@@ -79,13 +113,41 @@ router.post('/register', async (req, res) => {
 });
 
 // User login route
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt:', email);
     
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    console.log('User found:', user ? 'Yes' : 'No');
+    
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isMatch = await user.comparePassword(password);
+    console.log('Password match:', isMatch ? 'Yes' : 'No');
+    
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate token
     const token = jwt.sign(
-      { email, role: 'user' },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1d' }
     );
@@ -93,9 +155,10 @@ router.post('/login', (req, res) => {
     res.json({
       token,
       user: {
-        email,
-        name: email.split('@')[0],
-        role: 'user'
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
       }
     });
   } catch (error) {
@@ -105,13 +168,29 @@ router.post('/login', (req, res) => {
 });
 
 // Staff login route
-router.post('/staff/login', (req, res) => {
+router.post('/staff/login', async (req, res) => {
   try {
     const { employeeId, password } = req.body;
     console.log('Staff login attempt:', employeeId);
     
+    // Find staff by employeeId
+    const staff = await User.findOne({ 
+      employeeId,
+      role: 'staff'
+    });
+    
+    if (!staff) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Check password
+    const isMatch = await staff.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
     const token = jwt.sign(
-      { employeeId, role: 'staff' },
+      { id: staff._id, role: staff.role },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1d' }
     );
@@ -119,9 +198,11 @@ router.post('/staff/login', (req, res) => {
     res.json({
       token,
       staff: {
-        employeeId,
-        name: `Staff-${employeeId}`,
-        role: 'staff'
+        id: staff._id,
+        name: staff.name,
+        employeeId: staff.employeeId,
+        email: staff.email,
+        role: staff.role
       }
     });
   } catch (error) {

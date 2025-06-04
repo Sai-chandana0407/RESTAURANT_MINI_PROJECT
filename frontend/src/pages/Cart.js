@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle } from "react-icons/fa";
+import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle, FaShoppingCart, FaClipboardList } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import './Cart.css';
 
@@ -122,6 +122,16 @@ function Cart() {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link text-dark" to="/cart" style={{ fontSize: '0.9rem' }}>
+                  <FaShoppingCart className="me-1" /> Cart
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/orderSummary" style={{ fontSize: '0.9rem' }}>
+                  <FaClipboardList className="me-1" /> Order Summary
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link text-dark" to="/contactUs" style={{ fontSize: '0.9rem' }}>
                   <FaPhone className="me-1" /> Contact
                 </Link>
@@ -147,7 +157,7 @@ function Cart() {
                   <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
                   <li><Link className="dropdown-item" to="/orders">Orders</Link></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><Link className="dropdown-item" to="/">Logout</Link></li>
+                  <li><Link className="dropdown-item" to="/signIn">Logout</Link></li>
                 </ul>
               </div>
             </div>

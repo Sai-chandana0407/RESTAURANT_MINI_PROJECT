@@ -20,37 +20,62 @@ function SignIn() {
     });
   };
 
+  const validateForm = () => {
+    if (!formData.email || !formData.password) {
+      setError('All fields are required');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return false;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      // Validate form data
-      if (!formData.email || !formData.password) {
-        throw new Error('All fields are required');
+      if (!validateForm()) {
+        setLoading(false);
+        return;
       }
 
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        throw new Error('Please enter a valid email address');
-      }
-
-      // Make API call to login
       const response = await axios.post('http://localhost:5000/api/auth/login', formData);
       
-      if (response.data.token) {
-        // Store token in localStorage
+      if (response.data.token && response.data.user) {
+        // Store token and user data
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        // Redirect to menu page
-        navigate('/menu');
+        // Redirect based on user role
+        if (response.data.user.role === 'staff') {
+          navigate('/dashboard');
+        } else {
+          navigate('/menu');
+        }
+      } else {
+        throw new Error('Invalid response from server');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.message || err.message || 'Login failed');
+      if (err.response) {
+        setError(err.response.data.message || 'Login failed. Please check your credentials.');
+      } else if (err.request) {
+        setError('Unable to connect to the server. Please check your internet connection.');
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -90,6 +115,7 @@ function SignIn() {
                 onChange={handleChange}
                 placeholder="Enter password"
                 required
+                minLength={6}
               />
             </div>
             <div className="text-end mb-3">

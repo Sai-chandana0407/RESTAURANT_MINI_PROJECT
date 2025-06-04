@@ -71,7 +71,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Please provide employee ID and password' });
     }
 
-    const staff = await Staff.findOne({ employeeId });
+    const staff = await Staff.findOne({ 
+      employeeId,
+      role: 'staff'
+    });
+    
     if (!staff) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -82,7 +86,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: staff._id },
+      { id: staff._id, role: staff.role },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );

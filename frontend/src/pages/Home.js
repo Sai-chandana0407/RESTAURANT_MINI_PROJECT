@@ -85,8 +85,8 @@ function Home() {
         <button
           className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
           aria-controls="navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -97,10 +97,13 @@ function Home() {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item"><Link className="nav-link text-white" to="/">Home</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/about">About Us</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/stafflogin">Admin</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/menu">Menu</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/cart">Cart</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/orderSummary">Order Summary</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/contactUs">Contact Us</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/reviews">Reviews</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/stafflogin">Admin</Link></li>
           </ul>
         </div>
       </nav>
