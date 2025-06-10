@@ -12,8 +12,7 @@ function SignUp() {
     email: '',
     password: '',
     confirmPassword: '',
-    phoneNumber: '',
-    role: 'customer'
+    phoneNumber: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

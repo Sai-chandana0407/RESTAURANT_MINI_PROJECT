@@ -1,0 +1,43 @@
+/* AdminMenuManager.css */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+body {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.container {
+  max-width: 1000px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+form .form-control, form .form-check-input {
+  min-width: 120px;
+  background: #fff !important;
+  color: #222 !important;
+}
+form .form-control::placeholder {
+  color: #888 !important;
+  opacity: 1 !important;
+}
+
+form .form-control:focus {
+  background: #fff !important;
+  color: #222 !important;
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+form .form-group label {
+  color: #222 !important;
+}
+table img {
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.btn {
+  min-width: 70px;
+}

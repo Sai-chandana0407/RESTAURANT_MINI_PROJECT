@@ -37,3 +37,13 @@ export const deleteMenuItem = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete item' });
   }
 };
+
+export const clearAllMenuItems = async (req, res) => {
+  try {
+    const result = await MenuItem.deleteMany({});
+    res.json({ message: `${result.deletedCount} menu items deleted successfully.` });
+  } catch (error) {
+    console.error('Error clearing menu items:', error);
+    res.status(500).json({ message: 'Failed to clear menu items' });
+  }
+};

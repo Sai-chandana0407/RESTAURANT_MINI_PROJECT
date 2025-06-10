@@ -45,7 +45,7 @@ function Cart() {
 
     try {
       const updatedItems = cartItems.map(item => 
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
+        item._id === itemId ? { ...item, quantity: newQuantity } : item
       );
       setCartItems(updatedItems);
       localStorage.setItem('cart', JSON.stringify(updatedItems));
@@ -57,7 +57,7 @@ function Cart() {
 
   const handleRemoveItem = (itemId) => {
     try {
-      const updatedItems = cartItems.filter(item => item.id !== itemId);
+      const updatedItems = cartItems.filter(item => item._id !== itemId);
       setCartItems(updatedItems);
       localStorage.setItem('cart', JSON.stringify(updatedItems));
     } catch (err) {
@@ -183,7 +183,7 @@ function Cart() {
           ) : (
             <>
               {cartItems.map((item) => (
-                <div key={item.id} className="d-flex align-items-center border-bottom pb-3 mb-3">
+                <div key={item._id} className="d-flex align-items-center border-bottom pb-3 mb-3">
                   <img src={item.image} alt={item.name} className="rounded" width="80" height="80" style={{ objectFit: 'cover' }} />
                   <div className="flex-grow-1 mx-3">
                     <h5 className="fw-bold text-dark">{item.name}</h5>
@@ -192,7 +192,7 @@ function Cart() {
                   <div className="d-flex align-items-center">
                     <button 
                       className="btn btn-sm btn-outline-danger me-2"
-                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
                       disabled={item.quantity <= 1}
                     >
                       <FaMinus />
@@ -208,13 +208,13 @@ function Cart() {
                     </span>
                     <button 
                       className="btn btn-sm btn-outline-success me-2"
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
                     >
                       <FaPlus />
                     </button>
                     <button 
                       className="btn btn-sm btn-outline-danger ms-2"
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => handleRemoveItem(item._id)}
                     >
                       <FaTrash />
                     </button>
@@ -231,8 +231,10 @@ function Cart() {
 
                 {/* Action Buttons */}
                 <div className="d-flex justify-content-center gap-3 mt-4">
-                  <button onClick={handlePlaceOrder} className="btn btn-warning fw-bold">Place Order</button>
-                  <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
+                 <Link to="/orderSummary"
+                      className="btn btn-warning fw-bold"
+                      state={{ cartItems, totalAmount }}
+                    >Place Order</Link>
                   <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
                 </div>
               </div>

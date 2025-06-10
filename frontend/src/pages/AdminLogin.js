@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { FaGoogle, FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './SignIn.css';
 
-function SignIn() {
+function AdminLogin() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -20,65 +19,26 @@ function SignIn() {
     });
   };
 
-  const validateForm = () => {
-    if (!formData.email || !formData.password) {
-      setError('All fields are required');
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return false;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      if (!validateForm()) {
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.post('http://localhost:5000/api/auth/login', formData);
-      
       if (response.data.token && response.data.user) {
-        // Store token and user data
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-
-        // Only allow admin login
         if (response.data.user.role !== 'admin') {
-          setError('Only admin login is allowed. Staff login is disabled.');
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          setError('Only admin login is allowed.');
           setLoading(false);
           return;
         }
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         navigate('/admin-menu');
       } else {
-        throw new Error('Invalid response from server');
+        setError('Invalid response from server');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      if (err.response) {
-        setError(err.response.data.message || 'Login failed. Please check your credentials.');
-      } else if (err.request) {
-        setError('Unable to connect to the server. Please check your internet connection.');
-      } else {
-        setError('An unexpected error occurred. Please try again later.');
-      }
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -87,8 +47,7 @@ function SignIn() {
   return (
     <div className="signin-page">
       <div className="signin-container">
-        <h2 className="signin-title">SIGN IN</h2>
-
+        <h2 className="signin-title">ADMIN LOGIN</h2>
         <div className="form-container">
           {error && (
             <div className="alert alert-danger" role="alert">
@@ -121,9 +80,6 @@ function SignIn() {
                 minLength={6}
               />
             </div>
-            <div className="text-end mb-3">
-              <Link to="/forgot-password" className="text-warning">Forgot Password?</Link>
-            </div>
             <button
               type="submit"
               className="btn btn-warning w-100 fw-bold mb-3"
@@ -131,23 +87,11 @@ function SignIn() {
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
-            
-            <div className="text-center">
-              <p className="mb-0 text-white">New User? <Link to="/signup" className="text-warning fw-bold">Sign up</Link> to create your account</p>
-            </div>
           </form>
-        </div>
-
-        {/* Social Icons */}
-        <div className="social-icons">
-          <a href="#" className="social-icon"><FaGoogle /></a>
-          <a href="#" className="social-icon"><FaFacebookF /></a>
-          <a href="#" className="social-icon"><FaInstagram /></a>
-          <a href="#" className="social-icon"><FaTwitter /></a>
         </div>
       </div>
     </div>
   );
 }
 
-export default SignIn;
+export default AdminLogin;

@@ -103,7 +103,7 @@ function Home() {
             <li className="nav-item"><Link className="nav-link text-white" to="/contactUs">Contact Us</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/reviews">Reviews</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/stafflogin">Admin</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/adminlogin">Admin</Link></li>
           </ul>
         </div>
       </nav>

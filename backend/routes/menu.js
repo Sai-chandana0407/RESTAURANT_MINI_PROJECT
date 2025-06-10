@@ -13,6 +13,8 @@ import MenuItem from '../models/MenuItem.js';
 const router = express.Router();
 
 router.get('/', getMenu);
+
+// Role-based access for menu CRUD
 router.post('/', protect, roleCheck(['admin']), createMenuItem);
 router.put('/:id', protect, roleCheck(['admin']), updateMenuItem);
 router.delete('/:id', protect, roleCheck(['admin']), deleteMenuItem);
@@ -21,6 +23,7 @@ router.delete('/:id', protect, roleCheck(['admin']), deleteMenuItem);
 router.get('/all', async (req, res) => {
   try {
     const menuItems = await MenuItem.find();
+    console.log("------>"+menuItems.image);
     res.json(menuItems);
   } catch (error) {
     console.error('Error fetching menu items:', error);

@@ -86,9 +86,9 @@ function Menu() {
   };
 
   const handleAddToCart = (item) => {
-    const count = itemCounts[item.id] || 0;
+    const count = itemCounts[item._id] || 0;
     if (count > 0) {
-      const existingItemIndex = cartItems.findIndex(cartItem => cartItem.id === item.id);
+      const existingItemIndex = cartItems.findIndex(cartItem => cartItem._id === item._id);
       
       if (existingItemIndex >= 0) {
         const updatedCartItems = [...cartItems];
@@ -100,7 +100,7 @@ function Menu() {
       
       setItemCounts(prev => {
         const newCounts = { ...prev };
-        delete newCounts[item.id];
+        delete newCounts[item._id];
         return newCounts;
       });
     }
@@ -243,7 +243,7 @@ function Menu() {
       <div className="container mt-4">
         <div className="row">
           {filteredItems.map((item) => (
-            <div key={item.id} className="col-md-4 mb-4">
+            <div key={item._id} className="col-md-4 mb-4">
               <div className="card h-100" style={{ backgroundColor: '#333', border: '1px solid #444' }}>
                 <img src={item.image} className="card-img-top" alt={item.name} style={{ height: "200px", objectFit: "cover" }} />
                 <div className="card-body">
@@ -253,8 +253,8 @@ function Menu() {
                     <div className="d-flex align-items-center">
                       <button 
                         className="btn btn-sm btn-outline-danger me-2"
-                        onClick={() => handleDecrement(item.id)}
-                        disabled={!itemCounts[item.id]}
+                        onClick={() => handleDecrement(item._id)}
+                        disabled={!itemCounts[item._id]}
                       >
                         <FaMinus />
                       </button>
@@ -264,11 +264,11 @@ function Menu() {
                         minWidth: '20px',
                         textAlign: 'center'
                       }}>
-                        {itemCounts[item.id] || 0}
+                        {itemCounts[item._id] || 0}
                       </span>
                       <button 
                         className="btn btn-sm btn-outline-success me-2"
-                        onClick={() => handleIncrement(item.id)}
+                        onClick={() => handleIncrement(item._id)}
                       >
                         <FaPlus />
                       </button>
@@ -276,7 +276,7 @@ function Menu() {
                     <button 
                       className="btn btn-warning"
                       onClick={() => handleAddToCart(item)}
-                      disabled={!itemCounts[item.id]}
+                      disabled={!itemCounts[item._id]}
                     >
                       Add
                     </button>

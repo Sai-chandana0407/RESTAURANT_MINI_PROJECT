@@ -24,6 +24,8 @@ import Reviews from './pages/Reviews';
 import Feedback from './pages/Feedback';
 import ForgotPassword from './pages/ForgotPassword';
 import VerifyOTP from './pages/VerifyOTP';
+import AdminMenuManager from './pages/AdminMenuManager';
+import AdminLogin from './pages/AdminLogin';
 import './App.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -46,11 +48,6 @@ function App() {
           <Route path="/orderSummary" element={<OrderSummary />} />
           <Route path="/timeSlot" element={<TimeSlot />} />
           <Route path="/payment" element={<PaymentForm />} />
-          <Route path="/orders" element={<OrdersPlaced />} />
-          <Route path="/profile" element={<EmployeeProfile />} />
-          <Route path="/history" element={<HistoryOrders />} />
-          <Route path="/dashboard" element={<EmployeeDashboard />} />
-          <Route path="/stafflogin" element={<StaffLogin />} />
           <Route path="/ownerlogin" element={<OwnerLogin />} />
           <Route path="/items-list" element={<ItemCart />} />
           <Route path="/employee-list" element={<EmployeeList />} />
@@ -59,6 +56,12 @@ function App() {
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
+          <Route path="/admin-menu" element={<AdminMenuManager />} />
+          <Route path="/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/profile" element={<EmployeeProfile />} />
+          <Route path="/history" element={<HistoryOrders />} />
+          <Route path="/orders" element={<OrdersPlaced />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
         </Routes>
       </Router>
     </div>
