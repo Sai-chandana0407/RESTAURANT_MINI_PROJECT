@@ -3,7 +3,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaSearch, FaUserCircle, FaPlus, FaMinus, FaShoppingCart, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUser, FaStar, FaClipboardList, FaCalendarAlt, FaSignOutAlt } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+
+const menuItems = [
+  { id: 1, name: "Omlette", price: 120, category: "Breakfast", image: "/img/omlette.jpeg" },
+  { id: 2, name: "North Indian", price: 250, category: "Main course", image: "/img/panner.jpeg" },
+  { id: 3, name: "Coffee", price: 80, category: "Drinks", image: "/img/coffee.jpeg" },
+  { id: 4, name: "Cake", price: 150, category: "Deserts and Sweets", image: "/img/cake.jpeg" },
+  { id: 5, name: "Chicken", price: 300, category: "Main course", image: "/img/chicken.jpeg" },
+  { id: 6, name: "Idli", price: 100, category: "Breakfast", image: "/img/idli.jpeg" },
+  { id: 7, name: "Noodles", price: 180, category: "Asian", image: "/img/noodles.jpeg" },
+];
 
 function Menu() {
   const location = useLocation();
@@ -11,31 +20,8 @@ function Menu() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [itemCounts, setItemCounts] = useState({});
-  const [menuItems, setMenuItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
-
-  // Fetch menu items from backend
-  useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/menu');
-        setMenuItems(response.data);
-        setFilteredItems(response.data);
-      } catch (error) {
-        console.error('Error fetching menu items:', error);
-      }
-    };
-    fetchMenuItems();
-  }, []);
-
-  // Save cart items to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+  const [filteredItems, setFilteredItems] = useState(menuItems);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     if (location.state) {
@@ -44,6 +30,9 @@ function Menu() {
       }
       if (location.state.category) {
         setSelectedCategory(location.state.category);
+      }
+      if (location.state.cartItems) {
+        setCartItems(location.state.cartItems);
       }
     }
   }, [location]);
@@ -61,7 +50,7 @@ function Menu() {
       );
     }
     setFilteredItems(filtered);
-  }, [searchQuery, selectedCategory, menuItems]);
+  }, [searchQuery, selectedCategory]);
 
   const handleIncrement = (itemId) => {
     setItemCounts(prev => ({
@@ -106,8 +95,24 @@ function Menu() {
     }
   };
 
+  const addToCart = (item) => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const existingItemIndex = cartItems.findIndex(cartItem => cartItem.id === item.id);
+    
+    if (existingItemIndex >= 0) {
+      // Update quantity if item exists
+      cartItems[existingItemIndex].quantity += 1;
+    } else {
+      // Add new item if it doesn't exist
+      cartItems.push({ ...item, quantity: 1 });
+    }
+    
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    navigate('/cart', { state: { cartItems: [{ ...item, quantity: 1 }] } });
+  };
+
   const handleViewCart = () => {
-    navigate('/cart');
+    navigate('/cart', { state: { cartItems } });
   };
 
   const getTotalItems = () => {
@@ -115,7 +120,7 @@ function Menu() {
   };
 
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh' }}>
+    <div style={{  minHeight: '100vh' }}>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm" style={{ height: '50px' }}>
         <div className="container">
@@ -141,17 +146,7 @@ function Menu() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-white" to="/cart" style={{ fontSize: '0.9rem' }}>
-                  <FaShoppingCart className="me-1" /> Cart
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/orderSummary" style={{ fontSize: '0.9rem' }}>
-                  <FaClipboardList className="me-1" /> Order Summary
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/contactUs" style={{ fontSize: '0.9rem' }}>
+                <Link className="nav-link text-white" to="/about" style={{ fontSize: '0.9rem' }}>
                   <FaPhone className="me-1" /> Contact
                 </Link>
               </li>
@@ -163,7 +158,7 @@ function Menu() {
             </ul>
 
             <div className="d-flex align-items-center">
-              <button 
+              <button
                 className="btn btn-warning position-relative me-3"
                 onClick={handleViewCart}
                 style={{ padding: '0.25rem 0.5rem', fontSize: '0.9rem' }}
@@ -177,13 +172,13 @@ function Menu() {
               </button>
               
               <div className="dropdown">
-                <button 
+                <button
                   className="btn btn-link dropdown-toggle d-flex align-items-center justify-content-center" 
-                  type="button" 
+                  type="button"
                   id="userDropdown"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                  style={{ 
+                  style={{
                     width: '40px',
                     height: '40px',
                     padding: '0',
@@ -195,10 +190,10 @@ function Menu() {
                   <FaUserCircle size={24} className="text-white" />
                 </button>
                 
-                <ul 
-                  className="dropdown-menu dropdown-menu-end p-3" 
+                <ul
+                  className="dropdown-menu dropdown-menu-end p-3"
                   aria-labelledby="userDropdown"
-                  style={{ 
+                  style={{
                     minWidth: '250px',
                     border: '1px solid #fff',
                     boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.15)',
@@ -207,14 +202,13 @@ function Menu() {
                 >
                   <li className="d-flex align-items-center mb-3">
                     <FaUserCircle size={40} className="text-white me-2" />
-                    <div>
-                      <h6 className="mb-0 text-white">John Doe</h6>
-                    </div>
                   </li>
-                  <li><Link className="dropdown-item text-white" to="/profile">Profile</Link></li>
-                  <li><Link className="dropdown-item text-white" to="/orders">Orders</Link></li>
-                  <li><hr className="dropdown-divider bg-white" /></li>
-                  <li><Link className="dropdown-item text-white" to="/signIn">Logout</Link></li>
+                  <li>
+                    <Link className="dropdown-item d-flex align-items-center py-2" to="/" style={{ color: '#ff4444' }}>
+                      <FaSignOutAlt className="me-2" />
+                      <span>Logout</span>
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -275,7 +269,7 @@ function Menu() {
                     </div>
                     <button 
                       className="btn btn-warning"
-                      onClick={() => handleAddToCart(item)}
+                      onClick={() => addToCart(item)}
                       disabled={!itemCounts[item.id]}
                     >
                       Add

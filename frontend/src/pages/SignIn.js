@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaGoogle, FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './SignIn.css';
@@ -128,23 +127,13 @@ function SignIn() {
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
-            
             <div className="text-center">
               <p className="mb-0 text-white">New User? <Link to="/signup" className="text-warning fw-bold">Sign up</Link> to create your account</p>
             </div>
           </form>
         </div>
-
-        {/* Social Icons */}
-        <div className="social-icons">
-          <a href="#" className="social-icon"><FaGoogle /></a>
-          <a href="#" className="social-icon"><FaFacebookF /></a>
-          <a href="#" className="social-icon"><FaInstagram /></a>
-          <a href="#" className="social-icon"><FaTwitter /></a>
-        </div>
       </div>
     </div>
   );
 }
-
 export default SignIn;

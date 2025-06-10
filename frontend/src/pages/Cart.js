@@ -1,99 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle, FaShoppingCart, FaClipboardList } from "react-icons/fa";
+import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import './Cart.css';
 
 function Cart() {
   const location = useLocation();
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState(() => {
-    // Initialize cart items from localStorage
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Update cart items when location changes (back navigation)
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    // Initialize cart items from localStorage or location state
+    const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        if (Array.isArray(parsedCart)) {
-          setCartItems(parsedCart);
-        }
-      } catch (err) {
-        console.error('Error parsing cart data:', err);
-      }
+      return JSON.parse(savedCart);
     }
-  }, [location]);
+    return location.state?.cartItems || [];
+  });
 
+  // Update localStorage whenever cartItems change
   useEffect(() => {
-    // Recalculate total whenever cartItems change
-    if (Array.isArray(cartItems)) {
-      const newTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      setTotalAmount(newTotal);
-    }
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const handleQuantityChange = (itemId, newQuantity) => {
-    if (newQuantity < 1) return;
-
-    try {
-      const updatedItems = cartItems.map(item => 
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      );
-      setCartItems(updatedItems);
-      localStorage.setItem('cart', JSON.stringify(updatedItems));
-    } catch (err) {
-      setError('Failed to update quantity');
-      console.error('Error updating quantity:', err);
-    }
-  };
-
-  const handleRemoveItem = (itemId) => {
-    try {
-      const updatedItems = cartItems.filter(item => item.id !== itemId);
-      setCartItems(updatedItems);
-      localStorage.setItem('cart', JSON.stringify(updatedItems));
-    } catch (err) {
-      setError('Failed to remove item');
-      console.error('Error removing item:', err);
-    }
-  };
-
-  const handlePlaceOrder = () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      // Navigate to payment page instead of directly placing order
-      navigate('/payment', { 
-        state: { 
-          cartItems,
-          totalAmount 
-        } 
+  // Handle new items from location state
+  useEffect(() => {
+    if (location.state?.cartItems) {
+      const newItems = location.state.cartItems;
+      setCartItems(prevItems => {
+        // Merge new items with existing cart
+        const updatedItems = [...prevItems];
+        newItems.forEach(newItem => {
+          const existingItemIndex = updatedItems.findIndex(item => item.id === newItem.id);
+          if (existingItemIndex >= 0) {
+            // Update quantity if item exists
+            updatedItems[existingItemIndex].quantity += newItem.quantity;
+          } else {
+            // Add new item if it doesn't exist
+            updatedItems.push(newItem);
+          }
+        });
+        return updatedItems;
       });
-    } catch (err) {
-      setError('Failed to proceed to payment');
-      console.error('Error proceeding to payment:', err);
     }
+  }, [location.state]);
+
+  const increaseQuantity = (id) => {
+    setCartItems(cartItems.map(item => 
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    ));
   };
 
-  if (loading) {
-    return <div className="cart-loading">Loading cart...</div>;
-  }
+  const decreaseQuantity = (id) => {
+    setCartItems(cartItems.map(item => 
+      item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    ));
+  };
 
-  if (error) {
-    return <div className="cart-error">{error}</div>;
-  }
+  const removeItem = (id) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
 
   return (
     <div>
@@ -122,16 +90,6 @@ function Cart() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/cart" style={{ fontSize: '0.9rem' }}>
-                  <FaShoppingCart className="me-1" /> Cart
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-dark" to="/orderSummary" style={{ fontSize: '0.9rem' }}>
-                  <FaClipboardList className="me-1" /> Order Summary
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link className="nav-link text-dark" to="/contactUs" style={{ fontSize: '0.9rem' }}>
                   <FaPhone className="me-1" /> Contact
                 </Link>
@@ -157,7 +115,7 @@ function Cart() {
                   <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
                   <li><Link className="dropdown-item" to="/orders">Orders</Link></li>
                   <li><hr className="dropdown-divider" /></li>
-                  <li><Link className="dropdown-item" to="/signIn">Logout</Link></li>
+                  <li><Link className="dropdown-item" to="/">Logout</Link></li>
                 </ul>
               </div>
             </div>
@@ -168,8 +126,8 @@ function Cart() {
       {/* Cart Content */}
       <div className="container mt-4">
         {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="fw-bold text-dark">CART</h2>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h2 className="fw-bold text-white p-4">CART</h2>
           <Link to="/menu" className="btn btn-warning">Back to Menu</Link>
         </div>
 
@@ -192,7 +150,7 @@ function Cart() {
                   <div className="d-flex align-items-center">
                     <button 
                       className="btn btn-sm btn-outline-danger me-2"
-                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      onClick={() => decreaseQuantity(item.id)}
                       disabled={item.quantity <= 1}
                     >
                       <FaMinus />
@@ -208,13 +166,13 @@ function Cart() {
                     </span>
                     <button 
                       className="btn btn-sm btn-outline-success me-2"
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      onClick={() => increaseQuantity(item.id)}
                     >
                       <FaPlus />
                     </button>
                     <button 
                       className="btn btn-sm btn-outline-danger ms-2"
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => removeItem(item.id)}
                     >
                       <FaTrash />
                     </button>
@@ -226,15 +184,15 @@ function Cart() {
               <div className="border-top pt-3 mt-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <h4 className="mb-0 text-dark">Total Amount:</h4>
-                  <h4 className="mb-0 text-dark">₹{totalAmount}</h4>
+                  <h4 className="mb-0 text-dark">₹{calculateTotal()}</h4>
                 </div>
+              </div>
 
-                {/* Action Buttons */}
-                <div className="d-flex justify-content-center gap-3 mt-4">
-                  <button onClick={handlePlaceOrder} className="btn btn-warning fw-bold">Place Order</button>
-                  <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
-                  <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
-                </div>
+              {/* Action Buttons */}
+              <div className="d-flex justify-content-center gap-3 mt-4">
+                <Link to="/orderSummary" className="btn btn-warning fw-bold">Place Order</Link>
+                <Link to="/orderSummary" className="btn btn-warning fw-bold">Take Away</Link>
+                <Link to="/reserveTable" className="btn btn-warning fw-bold">Reserve Table</Link>
               </div>
             </>
           )}

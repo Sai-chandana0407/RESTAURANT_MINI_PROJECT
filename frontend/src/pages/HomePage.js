@@ -31,8 +31,14 @@ function HomePage() {
           </a>
 
           {/* Navbar Links */}
-          <div className="ms-auto">
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><Link className="nav-link text-white" to="/menu">Menu</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/cart">Cart</Link></li>
+            
+            <li className="nav-item"><Link className="nav-link text-white" to="/orderSummary">Order Summary</Link></li>
             <Link to="/" className="nav-link d-inline mx-1 text-white">Sign Out</Link>
+            </ul>
           </div>
         </div>
       </nav>
@@ -51,24 +57,6 @@ function HomePage() {
           <Link to="/menu" className="btn btn-warning fw-bold mx-2">View Menu</Link>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer 
-        className="text-center py-3"
-        style={{
-          position: "absolute",
-          bottom: "0",
-          width: "100%",
-          background: "rgba(0, 0, 0, 0.7)",
-          margin: "0 10px", fontSize: "20px", color: "white",textDecoration:"none" ,
-          }
-        }
-      >
-        <FaGoogle className="text-white mx-3 fs-4" />
-        <FaFacebookF className="text-white mx-3 fs-4" />
-        <FaInstagram className="text-white mx-3 fs-4" />
-        <FaTwitter className="text-white mx-3 fs-4" />
-      </footer>
     </div>
   );
 };

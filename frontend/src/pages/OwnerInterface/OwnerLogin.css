@@ -2,7 +2,7 @@
 .owner-login {
     width: 100vw;
     height: 100vh;
-    background: url('C:\Users\Dell\Desktop\RESTAURANT_MINI_PROJECT\frontend\public\img\Owner1.jpeg') no-repeat center center;
+    background: url('C:\Users\saich\OneDrive\Desktop\Project_latest\RESTAURANT_MINI_PROJECT\frontend\public\img\img2.jpg') no-repeat center center;
     background-size: cover;
 
     position: relative;
@@ -20,7 +20,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: url('C:\Users\Dell\Desktop\RESTAURANT_MINI_PROJECT\frontend\public\img\Owner1.jpeg') no-repeat center center;
+    background: url('C:\Users\saich\OneDrive\Desktop\Project_latest\RESTAURANT_MINI_PROJECT\frontend\public\img\img2.jpg') no-repeat center center;
     background-size: cover;
 
     opacity: 0.6; /* Adjust visibility */

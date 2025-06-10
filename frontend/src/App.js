@@ -2,7 +2,6 @@ import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import ContactUs from './pages/ContactUs';
 import HomePage from './pages/HomePage';
 import Menu from './pages/Menu';
 import SearchMenu from './pages/SearchMenu';
@@ -37,7 +36,6 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
-          <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/homePage" element={<HomePage />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/reserveTable" element={<ReserveTable />} />

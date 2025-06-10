@@ -61,7 +61,7 @@ function ReserveTable() {
 
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-5 fw-bold" style={{ color: '#000' }}>RESERVE YOUR TABLE</h2>
+      <h2 className="text-center mb-5 fw-bold" style={{ color: '#ffffff' }}>RESERVE YOUR TABLE</h2>
       <div className="row">
         {tableData.map((table) => (
           <div className="col-md-4 mb-4" key={table.id}>

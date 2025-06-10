@@ -195,13 +195,6 @@ function SignUp() {
             <p className="text-white">Already have an account? <Link to="/signin" className="text-warning">Sign In</Link></p>
           </div>
         </div>
-
-        <div className="social-icons">
-          <a href="#" className="social-icon"><FaGoogle /></a>
-          <a href="#" className="social-icon"><FaFacebookF /></a>
-          <a href="#" className="social-icon"><FaInstagram /></a>
-          <a href="#" className="social-icon"><FaTwitter /></a>
-        </div>
       </div>
     </div>
   );

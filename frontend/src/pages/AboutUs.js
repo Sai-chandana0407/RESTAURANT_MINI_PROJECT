@@ -118,7 +118,7 @@ function AboutUs() {
               <div className="contact-info">
                 <FaEnvelope className="contact-icon" />
                 <h3>Email</h3>
-                <p>info@homelybites.com</p>
+                <p>restauranthomelybites@gmail.com</p>
               </div>
             </div>
             <div className="col-md-4">
@@ -128,16 +128,6 @@ function AboutUs() {
                 <p>123 Restaurant Street, Food City, 123456</p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Social Media */}
-        <div className="social-section">
-          <h2>Follow Us</h2>
-          <div className="social-links">
-            <a href="#" className="social-icon"><FaFacebook /></a>
-            <a href="#" className="social-icon"><FaTwitter /></a>
-            <a href="#" className="social-icon"><FaInstagram /></a>
           </div>
         </div>
       </div>

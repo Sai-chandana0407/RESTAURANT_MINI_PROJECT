@@ -62,7 +62,7 @@ function Home() {
     },
     footer: {
       backgroundColor: "#000000",
-      color: "#fff",
+      color: "#ffffff",
       textAlign: "center",
       padding: "15px 0",
     },
@@ -72,6 +72,12 @@ function Home() {
       marginRight: "10px",
       borderRadius: "50%",
       objectFit: "cover",
+    },
+    para:
+    {
+      color: "#ffffff",
+      fontSize: "14px",
+      textAlign: "center",
     },
   };
 
@@ -97,10 +103,6 @@ function Home() {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item"><Link className="nav-link text-white" to="/">Home</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/about">About Us</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/menu">Menu</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/cart">Cart</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/orderSummary">Order Summary</Link></li>
-            <li className="nav-item"><Link className="nav-link text-white" to="/contactUs">Contact Us</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/reviews">Reviews</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/stafflogin">Admin</Link></li>
@@ -128,13 +130,7 @@ function Home() {
 
       {/* Footer Section */}
       <footer style={styles.footer}>
-        <p>© 2025 Homely Bites. All Rights Reserved.</p>
-        <div className="social-icons w-100 text-center py-3 mt-4">
-          <FaGoogle className="text-white mx-3 fs-4" />
-          <FaFacebookF className="text-white mx-3 fs-4" />
-          <FaInstagram className="text-white mx-3 fs-4" />
-          <FaTwitter className="text-white mx-3 fs-4" />
-        </div>
+        <p style={styles.para}>© 2025 Homely Bites. All Rights Reserved.</p>
       </footer>
     </div>
   );

@@ -1,6 +1,6 @@
 .reviews-page {
   min-height: 100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('./img4.jpg') no-repeat center center/cover;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), "url('./img4.jpg') no-repeat center center/cover";
   color: #fff;
   padding: 2rem 0;
 }
@@ -71,7 +71,7 @@
 }
 
 .star {
-  color: #ffc107;
+  color: #ffffff;
   font-size: 1.5rem;
   cursor: pointer;
   transition: transform 0.2s ease;
