@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminMenuManager.css';
+import { Link } from 'react-router-dom';
 
 const API_URL = 'http://localhost:5000/api/menu';
 
@@ -90,7 +91,12 @@ function AdminMenuManager() {
 
   return (
     <div className="container py-4" style={{ minHeight: '100vh', overflowY: 'auto' }}>
-      <h2 className="mb-4">Admin Menu Management</h2>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Admin Menu Management</h2>
+        <Link to="/user-orders" className="btn btn-primary">
+          View User Orders
+        </Link>
+      </div>
       {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="row g-2">

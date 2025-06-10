@@ -26,6 +26,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import VerifyOTP from './pages/VerifyOTP';
 import AdminMenuManager from './pages/AdminMenuManager';
 import AdminLogin from './pages/AdminLogin';
+import UserOrders from './pages/UserOrders';
+import Login from './pages/Login';
 import './App.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -62,6 +64,10 @@ function App() {
           <Route path="/history" element={<HistoryOrders />} />
           <Route path="/orders" element={<OrdersPlaced />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
+          <Route path="/user-orders" element={<UserOrders />} />
+          <Route path="/payment/:paymentId" element={<PaymentForm />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </Router>
     </div>

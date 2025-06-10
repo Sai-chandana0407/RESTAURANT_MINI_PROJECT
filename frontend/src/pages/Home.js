@@ -104,6 +104,7 @@ function Home() {
             <li className="nav-item"><Link className="nav-link text-white" to="/reviews">Reviews</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/signIn">Sign In</Link></li>
             <li className="nav-item"><Link className="nav-link text-white" to="/adminlogin">Admin</Link></li>
+            <li className="nav-item"><Link className="nav-link text-white" to="/staffLogin">Staff</Link></li>
           </ul>
         </div>
       </nav>

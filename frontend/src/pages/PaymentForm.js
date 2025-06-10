@@ -1,28 +1,69 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-function PaymentForm ()  {
+
+function PaymentForm() {
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [showCredits, setShowCredits] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '' });
   const [cardError, setCardError] = useState('');
+  const [error, setError] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { orderId, totalAmount } = location.state || {};
 
   const handleCardInput = (e) => {
     setCardDetails({ ...cardDetails, [e.target.name]: e.target.value });
     setCardError('');
   };
 
-  const handlePayNow = () => {
-    if (paymentMethod === "Credit Card") {
-      if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvv) {
-        setCardError('Please fill all credit card details.');
-        setPaymentSuccess(false);
+  const handlePayNow = async () => {
+    try {
+      if (paymentMethod === "Credit Card") {
+        if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvv) {
+          setCardError('Please fill all credit card details.');
+          setPaymentSuccess(false);
+          return;
+        }
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
         return;
       }
+
+      // Update order status to 'paid'
+      await axios.put(
+        `http://localhost:5000/api/orders/${orderId}`,
+        { status: 'paid' },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      setCardError('');
+      setPaymentSuccess(true);
+      
+      // Navigate to orders page after 2 seconds
+      setTimeout(() => {
+        navigate('/orders');
+      }, 2000);
+    } catch (err) {
+      console.error('Error processing payment:', err);
+      setError('Failed to process payment. Please try again.');
     }
-    setCardError('');
-    setPaymentSuccess(true);
   };
+
+  if (!orderId) {
+    return (
+      <div className="alert alert-danger text-center mt-5">
+        No order information found. Please place an order first.
+      </div>
+    );
+  }
 
   return (
     <div
@@ -33,6 +74,9 @@ function PaymentForm ()  {
     >
       <div className="container mt-5">
         <h2 className="text-center">Choose Payment Method</h2>
+        <div className="text-center mb-4">
+          <h4>Total Amount: ₹{totalAmount}</h4>
+        </div>
         <div className="d-flex justify-content-center my-3">
           <button className="btn btn-warning mx-2" onClick={() => setPaymentMethod("UPI")}>
             UPI
@@ -80,6 +124,7 @@ function PaymentForm ()  {
         <div className="text-center mt-3">
           <button className="btn btn-success" onClick={handlePayNow}>Pay Now</button>
         </div>
+        {error && <div className="alert alert-danger text-center mt-3">{error}</div>}
         {paymentSuccess && (
           <div className="alert alert-success text-center mt-4" style={{ fontSize: '1.2rem' }}>
             <strong>Payment successful!</strong><br />
@@ -90,6 +135,6 @@ function PaymentForm ()  {
       </div>
     </div>
   );
-};
+}
 
 export default PaymentForm;

@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaTrash, FaPlus, FaMinus, FaHome, FaUtensils, FaPhone, FaInfoCircle, FaUserCircle, FaShoppingCart, FaClipboardList } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import './Cart.css';
+import axios from "axios";
 
 function Cart() {
   const location = useLocation();
@@ -66,7 +67,7 @@ function Cart() {
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -74,16 +75,43 @@ function Cart() {
         return;
       }
 
-      // Navigate to payment page instead of directly placing order
+      setLoading(true);
+      
+      // Create order items array in the format expected by the backend
+      const orderItems = cartItems.map(item => ({
+        menuItem: item._id,
+        quantity: item.quantity
+      }));
+
+      console.log('Creating order with items:', orderItems);
+
+      // Create the order
+      const orderResponse = await axios.post(
+        'http://localhost:5000/api/orders',
+        { items: orderItems },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      console.log('Order created:', orderResponse.data);
+
+      // Clear the cart after successful order
+      setCartItems([]);
+      localStorage.removeItem('cart');
+
+      // Navigate to payment page with order details
       navigate('/payment', { 
         state: { 
-          cartItems,
-          totalAmount 
+          orderId: orderResponse.data._id,
+          totalAmount: orderResponse.data.totalAmount || totalAmount
         } 
       });
     } catch (err) {
-      setError('Failed to proceed to payment');
       console.error('Error proceeding to payment:', err);
+      setError('Failed to proceed to payment. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 

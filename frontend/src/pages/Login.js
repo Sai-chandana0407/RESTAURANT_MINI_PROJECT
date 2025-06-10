@@ -1,44 +1,26 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import './SignIn.css';
 
-function SignIn() {
+import { FaGoogle, FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Login.css';
+
+function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(location.state?.message || '');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const validateForm = () => {
-    if (!formData.email || !formData.password) {
-      setError('All fields are required');
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return false;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return false;
-    }
-
-    return true;
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -47,18 +29,12 @@ function SignIn() {
     setLoading(true);
 
     try {
-      if (!validateForm()) {
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.post('http://localhost:5000/api/auth/login', formData);
       
       if (response.data.token && response.data.user) {
-        // Store token and user data
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-
+        
         // Redirect based on user role
         if (response.data.user.role === 'staff') {
           navigate('/dashboard');
@@ -71,7 +47,7 @@ function SignIn() {
     } catch (err) {
       console.error('Login error:', err);
       if (err.response) {
-        setError(err.response.data.message || 'Login failed. Please check your credentials.');
+        setError(err.response.data.message || 'Login failed. Please try again.');
       } else if (err.request) {
         setError('Unable to connect to the server. Please check your internet connection.');
       } else {
@@ -83,19 +59,16 @@ function SignIn() {
   };
 
   return (
-    <div className="signin-page">
-      <div className="signin-container">
-        <h2 className="signin-title">SIGN IN</h2>
+    <div className="login-page">
+      <div className="login-overlay"></div>
+      
+      <div className="login-container">
+        <h2 className="login-title">SIGN IN</h2>
 
-        <div className="form-container">
+        <div className="login-form-container">
           {error && (
             <div className="alert alert-danger" role="alert">
               {error}
-            </div>
-          )}
-          {success && (
-            <div className="alert alert-success" role="alert">
-              {success}
             </div>
           )}
           <form onSubmit={handleSubmit}>
@@ -107,7 +80,7 @@ function SignIn() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter email"
+                placeholder="Enter your email"
                 required
               />
             </div>
@@ -119,28 +92,32 @@ function SignIn() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="Enter your password"
                 required
-                minLength={6}
               />
-            </div>
-            <div className="text-end mb-3">
-              <Link to="/forgot-password" className="text-warning">Forgot Password?</Link>
             </div>
             <button
               type="submit"
-              className="btn btn-warning w-100 fw-bold mb-3"
+              className="btn btn-warning"
               disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
-            <div className="text-center">
-              <p className="mb-0 text-white">New User? <Link to="/signup" className="text-warning fw-bold">Sign up</Link> to create your account</p>
-            </div>
           </form>
+          <div className="signup-link">
+            <p className="text-white">Don't have an account? <Link to="/signup" className="text-warning">Sign Up</Link></p>
+          </div>
+        </div>
+
+        <div className="social-icons">
+          <a href="#" className="social-icon"><FaGoogle /></a>
+          <a href="#" className="social-icon"><FaFacebookF /></a>
+          <a href="#" className="social-icon"><FaInstagram /></a>
+          <a href="#" className="social-icon"><FaTwitter /></a>
         </div>
       </div>
     </div>
   );
 }
-export default SignIn;
+
+export default Login; 

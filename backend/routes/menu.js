@@ -23,7 +23,7 @@ router.delete('/:id', protect, roleCheck(['admin']), deleteMenuItem);
 router.get('/all', async (req, res) => {
   try {
     const menuItems = await MenuItem.find();
-    console.log("------>"+menuItems.image);
+    console.log("Menu items fetched successfully:", menuItems.length);
     res.json(menuItems);
   } catch (error) {
     console.error('Error fetching menu items:', error);

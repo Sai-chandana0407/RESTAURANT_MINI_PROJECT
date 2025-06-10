@@ -18,7 +18,7 @@ connectDB().catch(err => {
 app.use(cors());
 app.use(express.json());
 
-app.use('/assets', express.static(path.join(process.cwd(), 'backend/assets')));
+app.use('/assets', express.static(path.join(process.cwd(), 'assets')));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
@@ -40,6 +40,34 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Try different ports if the default port is in use
+const startServer = async () => {
+  let currentPort = port;
+  while (currentPort < port + 10) {
+    try {
+      await new Promise((resolve, reject) => {
+        const server = app.listen(currentPort, () => {
+          console.log(`Server is running on port ${currentPort}`);
+          resolve();
+        });
+        server.on('error', (err) => {
+          if (err.code === 'EADDRINUSE') {
+            console.log(`Port ${currentPort} is in use, trying ${currentPort + 1}...`);
+            currentPort++;
+            reject(err);
+          } else {
+            reject(err);
+          }
+        });
+      });
+      break;
+    } catch (err) {
+      if (err.code !== 'EADDRINUSE') {
+        console.error('Server error:', err);
+        process.exit(1);
+      }
+    }
+  }
+};
+
+startServer();
